@@ -3,10 +3,15 @@ const tourController = require('./../controllers/tourController')
 const router = express.Router();
 
 
+//compare if ID > tour.length before find 
+router.param('id', tourController.checkId)
+
+  
+
 
 router.route('/')
 .get(tourController.getAllTours)
-.post(tourController.newTour)
+.post(tourController.checkBody, tourController.newTour)
 
 router
   .route('/:id')
