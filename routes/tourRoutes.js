@@ -4,14 +4,14 @@ const router = express.Router();
 
 
 //compare if ID > tour.length before find 
-router.param('id', tourController.checkId)
-
+// router.param('id', tourController.checkId)
+ 
   
 
 
 router.route('/')
 .get(tourController.getAllTours)
-.post(tourController.checkBody, tourController.newTour)
+.post(tourController.newTour)
 
 router
   .route('/:id')
