@@ -1,22 +1,16 @@
-const express = require('express')
-const tourController = require('./../controllers/tourController')
+const express = require('express');
+const tourController = require('./../controllers/tourController');
 const router = express.Router();
 
-
-//compare if ID > tour.length before find 
+//compare if ID > tour.length before find
 // router.param('id', tourController.checkId)
- 
-  
 
-
-router.route('/')
-.get(tourController.getAllTours)
-.post(tourController.newTour)
+router.route('/').get(tourController.getAllTours).post(tourController.newTour);
 
 router
   .route('/:id')
   .get(tourController.getTourById)
   .patch(tourController.editTourById)
-  .delete(tourController.deleteTourById)
+  .delete(tourController.deleteTourById);
 
-  module.exports = router;
+module.exports = router;
