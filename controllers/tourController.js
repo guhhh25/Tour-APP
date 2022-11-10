@@ -28,15 +28,42 @@ exports.getAllTours = async (req, res) => {
   try {
     //filtering
     const queryObj = {...req.query}
-    const excludeFields = ['page', 'sort', 'limit', 'fields']
-    excludeFields.forEach(el => delete queryObj[el])
-
+    const excludeFields = ['page', 'sort', 'limit', 'fields'] //parameters that need to be excluded
+    excludeFields.forEach(el => delete queryObj[el]) 
     //filtering with operators
     let queryStr = JSON.stringify(queryObj)
     let newStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`)
-    console.log(JSON.parse(newStr))
-    const query = Tour.find(JSON.parse(newStr)) //se find estiver vazio, puxa todos 
-    const tours = await query; 
+    let query = Tour.find(JSON.parse(newStr)) // if empty, find all
+    
+    //Sorting
+    if(req.query.sort){
+      const sortBy = req.query.sort.split(',').join(' ')
+      console.log(sortBy)
+      
+      query = query.sort(sortBy)
+      console.log(req.query.sort)
+    }else{
+      query = query.sort('-createdAt')
+    }
+
+    //fields limiting
+
+    if(req.query.fields) {
+      const fields = req.query.fields.split(',').join(' ')
+    
+      query = query.select(fields)
+    }else{
+      query = query.select('-__v')
+    }
+
+
+    // pagination
+    const page = req.query.page * 1 || 1
+    const limit = req.query.limit * 1 || 100
+    const skip = (page - 1) * limit
+    query = query.skip(skip).limit(limit)
+
+    const tours = await query;
     res.status(200).json({
       status: 'sucess',
       results: tours.length,
